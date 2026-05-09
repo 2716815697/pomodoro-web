@@ -77,7 +77,7 @@ body {
 
 .card-header .subtitle {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 16px;
   margin-top: 6px;
   min-height: 1.4em;
   transition: color 0.3s;
@@ -160,7 +160,7 @@ body {
 }
 
 .timer-text .phase-label {
-  font-size: 15px;
+  font-size: 17px;
   color: var(--text-secondary);
   margin-top: 8px;
   font-weight: 500;
@@ -182,7 +182,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-muted);
   transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -221,10 +221,10 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 12px 24px;
+  padding: 14px 28px;
   border: none;
   border-radius: var(--radius-sm);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -298,7 +298,7 @@ body {
 
 .setting-item label {
   display: block;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
   margin-bottom: 5px;
   font-weight: 500;
@@ -306,13 +306,13 @@ body {
 
 .setting-item input {
   width: 100%;
-  padding: 8px 6px;
+  padding: 9px 8px;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   background: var(--bg-card);
   color: var(--text-primary);
   text-align: center;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
   outline: none;
   font-family: var(--font);
@@ -412,13 +412,13 @@ body {
 }
 
 .sound-selector button {
-  padding: 6px 14px;
+  padding: 7px 16px;
   border-radius: 20px;
   border: 1px solid var(--border-color);
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   font-family: var(--font);
   transition: all 0.2s;
 }
@@ -440,7 +440,7 @@ body {
   display: flex;
   gap: 16px;
   justify-content: center;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
@@ -479,15 +479,42 @@ body {
 /* ====== 桌面玻璃卡片 ≥768px ====== */
 @media (min-width: 768px) {
   body {
-    padding: 32px;
+    padding: 24px;
     background:
       radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(160deg, #0a0a1a 0%, #14142e 40%, #1a1a2e 100%);
     background-size: 36px 36px, 100%;
+    position: relative;
+  }
+
+  /* 环境光晕 */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -20%;
+    right: -10%;
+    width: 60vmax;
+    height: 60vmax;
+    background: radial-gradient(ellipse, rgba(255, 107, 107, 0.08) 0%, transparent 60%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -2;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -20%;
+    left: -10%;
+    width: 60vmax;
+    height: 60vmax;
+    background: radial-gradient(ellipse, rgba(81, 207, 102, 0.06) 0%, transparent 60%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -2;
   }
 
   .card {
-    max-width: 680px;
+    max-width: min(85vw, 600px);
     width: 100%;
     background: rgba(26, 26, 46, 0.88);
     backdrop-filter: blur(24px);
@@ -495,8 +522,11 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: var(--radius-lg);
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
-    padding: 44px 52px;
+    padding: 28px 44px;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 48px);
   }
 
   .card::before {
@@ -504,56 +534,144 @@ body {
     opacity: 0.4;
   }
 
-  .card-header { margin-bottom: 24px; }
-  .card-header h1 { font-size: 30px; }
-  .card-header .subtitle { font-size: 15px; margin-top: 4px; }
+  /* 右上角装饰 L 线 */
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 28px;
+    height: 28px;
+    border-top: 2px solid rgba(255, 255, 255, 0.07);
+    border-right: 2px solid rgba(255, 255, 255, 0.07);
+    pointer-events: none;
+  }
+
+  .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .card-footer {
+    margin-top: auto;
+  }
+
+  .card-header { margin-bottom: 16px; }
+  .card-header h1 { font-size: 28px; }
+  .card-header .subtitle { font-size: 16px; margin-top: 2px; }
 
   .timer-ring {
-    width: 320px;
-    height: 320px;
-    margin: 0 auto 20px;
+    width: 260px;
+    height: 260px;
+    margin: 0 auto 14px;
+    flex-shrink: 0;
   }
   .timer-ring::before {
     width: 200%;
     height: 200%;
   }
-  .timer-text .time { font-size: 72px; }
+  .timer-text .time { font-size: 62px; }
   .timer-text .phase-label { font-size: 17px; }
 
-  .round-track { margin-bottom: 24px; gap: 12px; }
-  .round-dot { width: 34px; height: 34px; font-size: 14px; }
+  .round-track { margin-bottom: 16px; gap: 10px; }
+  .round-dot { width: 30px; height: 30px; font-size: 15px; }
 
-  .controls { gap: 14px; margin-bottom: 24px; }
-  .btn { padding: 12px 28px; font-size: 16px; min-width: 120px; }
+  .controls { gap: 12px; margin-bottom: 16px; }
+  .btn { padding: 12px 28px; font-size: 17px; min-width: 100px; }
   .controls .btn-primary { flex: none; }
 
-  .settings { margin: 0 auto 12px; padding: 18px 20px; max-width: 440px; }
-  .settings .num-stepper input { font-size: 18px; padding: 10px 4px; }
-  .settings .step-btn { width: 36px; font-size: 20px; }
+  .settings { margin: 0 auto 10px; padding: 14px 18px; max-width: 400px; }
+  .settings .num-stepper input { font-size: 16px; padding: 8px 4px; }
+  .settings .step-btn { width: 32px; font-size: 18px; }
+  .settings label { font-size: 12px; }
 
   .sound-selector { margin-bottom: 0; }
-  .sound-selector button { font-size: 14px; padding: 8px 18px; }
+  .sound-selector button { font-size: 15px; padding: 7px 16px; }
 
-  .history-section { margin: 10px auto 0; max-width: 440px; }
-  .history-toggle { font-size: 14px; padding: 10px 16px; }
+  .history-section { margin: 8px auto 0; max-width: 400px; }
+  .history-toggle { font-size: 15px; padding: 9px 16px; }
 
-  .keyboard-hints { margin-top: 14px; gap: 20px; font-size: 12px; }
+  .keyboard-hints { margin-top: 10px; gap: 16px; font-size: 14px; }
+
+  /* 装饰：浮动圆环 */
+  .deco-ring {
+    position: fixed;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.03), inset 0 0 40px rgba(255, 255, 255, 0.02);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .deco-ring--tl {
+    top: 5%;
+    left: 3%;
+    width: 160px;
+    height: 160px;
+  }
+  .deco-ring--br {
+    bottom: 5%;
+    right: 3%;
+    width: 200px;
+    height: 200px;
+  }
+  .deco-ring--tr {
+    top: 18%;
+    right: 1%;
+    width: 80px;
+    height: 80px;
+  }
+  .deco-ring--bl {
+    bottom: 18%;
+    left: 1%;
+    width: 90px;
+    height: 90px;
+  }
+
+  /* 装饰：竖向细线 */
+  .deco-line {
+    position: fixed;
+    width: 1px;
+    background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.06) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .deco-line--left {
+    left: 1.5%;
+    top: 10%;
+    height: 35%;
+  }
+  .deco-line--right {
+    right: 1.5%;
+    top: 55%;
+    height: 35%;
+  }
 }
 
 @media (min-width: 1200px) {
-  body { padding: 48px; background-size: 40px 40px, 100%; }
-  .card { max-width: 740px; padding: 52px 64px; }
-  .card-header h1 { font-size: 34px; }
+  body { padding: 32px; background-size: 40px 40px, 100%; }
+  .card { max-width: min(75vw, 720px); padding: 32px 48px; }
+  .card-header h1 { font-size: 28px; }
   .card-header .subtitle { font-size: 17px; }
-  .timer-ring { width: 360px; height: 360px; }
-  .timer-text .time { font-size: 80px; }
+  .timer-ring { width: 280px; height: 280px; }
+  .timer-text .time { font-size: 70px; }
   .timer-text .phase-label { font-size: 18px; }
-  .round-dot { width: 36px; height: 36px; font-size: 15px; }
-  .btn { padding: 14px 32px; font-size: 17px; min-width: 130px; }
-  .settings { max-width: 480px; padding: 20px 24px; }
-  .settings .num-stepper input { font-size: 20px; padding: 12px 4px; }
-  .settings .step-btn { width: 40px; font-size: 22px; }
-  .history-section { max-width: 480px; }
+  .round-dot { width: 34px; height: 34px; font-size: 16px; }
+  .btn { padding: 13px 32px; font-size: 18px; min-width: 120px; }
+  .settings { max-width: 420px; padding: 16px 20px; }
+  .settings .num-stepper input { font-size: 18px; padding: 9px 4px; }
+  .settings .step-btn { width: 36px; font-size: 20px; }
+  .history-section { max-width: 420px; }
+  .sound-selector button { font-size: 16px; }
+  .history-toggle { font-size: 16px; padding: 10px 18px; }
+  .settings label { font-size: 14px; }
+  .deco-ring--tl { width: 200px; height: 200px; top: 4%; left: 2%; }
+  .deco-ring--br { width: 250px; height: 250px; bottom: 4%; right: 2%; }
+  .deco-ring--tr { width: 100px; height: 100px; }
+  .deco-ring--bl { width: 110px; height: 110px; }
+  .deco-line--left { left: 1%; }
+  .deco-line--right { right: 1%; }
 }
 
 /* ====== 专注记录 ====== */
@@ -565,12 +683,12 @@ body {
 
 .history-toggle {
   width: 100%;
-  padding: 10px 16px;
+  padding: 11px 18px;
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 15px;
   font-family: var(--font);
   cursor: pointer;
   text-align: left;
@@ -601,9 +719,9 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 14px;
+  padding: 11px 14px;
   border-bottom: 1px solid var(--border-color);
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .history-item:last-child {
@@ -702,7 +820,7 @@ body {
 
 .modal-box p {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 15px;
   margin-bottom: 24px;
   line-height: 1.5;
 }

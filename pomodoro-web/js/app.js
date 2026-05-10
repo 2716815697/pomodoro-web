@@ -36,7 +36,9 @@ const dom = {
   historyList: $('historyList'),
   historyClear: $('historyClear'),
   historyModal: $('historyModal'),
-  historyClose: $('historyClose')
+  historyClose: $('historyClose'),
+  sideLeft: $('sideLeft'),
+  sideRight: $('sideRight')
 };
 
 // ====== 格式化 ======
@@ -155,6 +157,8 @@ function hideModal() {
 function showApp() {
   dom.authContainer.style.display = 'none';
   dom.appContainer.style.display = '';
+  dom.sideLeft.style.display = '';
+  dom.sideRight.style.display = '';
   renderUserHeader(dom.userHeader, handleLogout);
   timer.reset();
   renderHistory();
@@ -163,6 +167,8 @@ function showApp() {
 function showAuth() {
   dom.appContainer.style.display = 'none';
   dom.authContainer.style.display = '';
+  dom.sideLeft.style.display = 'none';
+  dom.sideRight.style.display = 'none';
   renderAuth(dom.authContainer, showApp);
 }
 

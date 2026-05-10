@@ -9,86 +9,93 @@
 <body>
 
 <div class="card" role="main">
-  <div class="card-header">
-    <h1>🍅 番茄钟</h1>
-    <p class="subtitle" id="statusText">准备就绪</p>
-  </div>
+  <!-- 登录/注册区域 -->
+  <div id="authContainer"></div>
 
-  <!-- 环形倒计时 -->
-  <div class="card-body">
-    <div class="timer-ring" id="timerRing">
-    <svg viewBox="0 0 100 100" aria-hidden="true">
-      <circle class="ring-bg" cx="50" cy="50" r="44"/>
-      <circle class="ring-fg" id="progressCircle"
-        cx="50" cy="50" r="44"
-        stroke-dasharray="276.46" stroke-dashoffset="0"/>
-    </svg>
-    <div class="timer-text">
-      <span class="time" id="timerDisplay">25:00</span>
-      <span class="phase-label" id="phaseLabel">🎯 专注</span>
+  <!-- 应用主区域（登录后显示） -->
+  <div id="appContainer" style="display:none">
+    <div class="card-header">
+      <div id="userHeader"></div>
+      <h1>🍅 番茄钟</h1>
+      <p class="subtitle" id="statusText">准备就绪</p>
     </div>
-  </div>
 
-  <!-- 轮次指示 -->
-  <div class="round-track" id="roundDots" aria-label="轮次进度"></div>
-
-  <!-- 操作按钮 -->
-  <div class="controls">
-    <button class="btn btn-primary" id="startBtn">▶ 开始</button>
-    <button class="btn btn-secondary" id="skipBtn">⏭ 跳过</button>
-    <button class="btn btn-secondary" id="resetBtn" title="重置">↻ 重置</button>
-  </div>
-
-  </div><!-- /.card-body -->
-
-  <div class="card-footer">
-    <!-- 设置 -->
-  <div class="settings">
-    <div class="setting-item">
-      <label for="focusInput">专注 (分)</label>
-      <div class="num-stepper">
-        <button class="step-btn" data-input="focusInput" data-dir="-1">−</button>
-        <input type="number" id="focusInput" value="25" min="1" max="120">
-        <button class="step-btn" data-input="focusInput" data-dir="1">+</button>
+    <!-- 环形倒计时 -->
+    <div class="card-body">
+      <div class="timer-ring" id="timerRing">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <circle class="ring-bg" cx="50" cy="50" r="44"/>
+        <circle class="ring-fg" id="progressCircle"
+          cx="50" cy="50" r="44"
+          stroke-dasharray="276.46" stroke-dashoffset="0"/>
+      </svg>
+      <div class="timer-text">
+        <span class="time" id="timerDisplay">25:00</span>
+        <span class="phase-label" id="phaseLabel">🎯 专注</span>
       </div>
     </div>
-    <div class="setting-item">
-      <label for="breakInput">休息 (分)</label>
-      <div class="num-stepper">
-        <button class="step-btn" data-input="breakInput" data-dir="-1">−</button>
-        <input type="number" id="breakInput" value="5" min="1" max="30">
-        <button class="step-btn" data-input="breakInput" data-dir="1">+</button>
+
+    <!-- 轮次指示 -->
+    <div class="round-track" id="roundDots" aria-label="轮次进度"></div>
+
+    <!-- 操作按钮 -->
+    <div class="controls">
+      <button class="btn btn-primary" id="startBtn">▶ 开始</button>
+      <button class="btn btn-secondary" id="skipBtn">⏭ 跳过</button>
+      <button class="btn btn-secondary" id="resetBtn" title="重置">↻ 重置</button>
+    </div>
+
+    </div><!-- /.card-body -->
+
+    <div class="card-footer">
+      <!-- 设置 -->
+    <div class="settings">
+      <div class="setting-item">
+        <label for="focusInput">专注 (分)</label>
+        <div class="num-stepper">
+          <button class="step-btn" data-input="focusInput" data-dir="-1">−</button>
+          <input type="number" id="focusInput" value="25" min="1" max="120">
+          <button class="step-btn" data-input="focusInput" data-dir="1">+</button>
+        </div>
+      </div>
+      <div class="setting-item">
+        <label for="breakInput">休息 (分)</label>
+        <div class="num-stepper">
+          <button class="step-btn" data-input="breakInput" data-dir="-1">−</button>
+          <input type="number" id="breakInput" value="5" min="1" max="30">
+          <button class="step-btn" data-input="breakInput" data-dir="1">+</button>
+        </div>
+      </div>
+      <div class="setting-item">
+        <label for="roundsInput">轮次</label>
+        <div class="num-stepper">
+          <button class="step-btn" data-input="roundsInput" data-dir="-1">−</button>
+          <input type="number" id="roundsInput" value="4" min="1" max="20">
+          <button class="step-btn" data-input="roundsInput" data-dir="1">+</button>
+        </div>
       </div>
     </div>
-    <div class="setting-item">
-      <label for="roundsInput">轮次</label>
-      <div class="num-stepper">
-        <button class="step-btn" data-input="roundsInput" data-dir="-1">−</button>
-        <input type="number" id="roundsInput" value="4" min="1" max="20">
-        <button class="step-btn" data-input="roundsInput" data-dir="1">+</button>
-      </div>
+
+    <!-- 音效选择 -->
+    <div class="sound-selector">
+      <button class="active" data-sound="bell">🔔 铃铛</button>
+      <button data-sound="digital">📱 电子</button>
+      <button data-sound="gentle">🎵 轻柔</button>
     </div>
-  </div>
 
-  <!-- 音效选择 -->
-  <div class="sound-selector">
-    <button class="active" data-sound="bell">🔔 铃铛</button>
-    <button data-sound="digital">📱 电子</button>
-    <button data-sound="gentle">🎵 轻柔</button>
-  </div>
+    <!-- 专注记录 -->
+    <div class="history-section">
+      <button class="history-toggle" id="historyToggle">📋 专注记录</button>
+    </div>
 
-  <!-- 专注记录 -->
-  <div class="history-section">
-    <button class="history-toggle" id="historyToggle">📋 专注记录</button>
+    <!-- 键盘提示 -->
+    <div class="keyboard-hints">
+      <span><kbd>Space</kbd> 暂停/继续</span>
+      <span><kbd>S</kbd> 跳过</span>
+      <span><kbd>R</kbd> 重置</span>
+    </div>
+    </div><!-- /.card-footer -->
   </div>
-
-  <!-- 键盘提示 -->
-  <div class="keyboard-hints">
-    <span><kbd>Space</kbd> 暂停/继续</span>
-    <span><kbd>S</kbd> 跳过</span>
-    <span><kbd>R</kbd> 重置</span>
-  </div>
-  </div><!-- /.card-footer -->
 </div>
 
 <!-- 装饰元素 -->

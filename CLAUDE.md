@@ -8,24 +8,40 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 启动方式
 
-需要静态文件服务器托管（ES Module 的 `type="module"` 不支持 `file://` 协议）。
+需要启动 Express 服务器（同时托管前端静态文件 + API 后端）：
 
-推荐方式：
-1. VS Code → 右键 `index.html` → Open with Live Server
-2. 或终端启动服务器：`python -m http.server -d pomodoro-web` / `npx serve pomodoro-web`
+```bash
+cd pomodoro-web
+npm install     # 首次需要
+npm start       # 启动后访问 http://localhost:3000
+npm run dev     # 开发模式，文件修改自动重启
+```
 
 ## 项目结构
 
 ```
 pomodoro-web/
-├── index.html          # 入口 HTML，含弹窗结构
+├── server.js          # Express 入口（API + 静态文件）
+├── package.json       # 依赖
+├── .gitignore
+├── index.html         # 入口 HTML（含 auth + timer 切换结构）
+├── db/
+│   ├── schema.sql     # SQLite 建表
+│   ├── database.js    # SQLite 连接 + 查询辅助
+│   └── pomodoro.db    # 数据库文件（自动生成，已 gitignore）
+├── middleware/
+│   └── auth.js        # JWT 验证中间件
+├── routes/
+│   ├── auth.js        # POST /api/auth/register, login, me
+│   └── records.js     # GET/POST/DELETE /api/records
 ├── css/
-│   └── style.css       # 全部样式（CSS 自定义属性主题，响应式）
+│   └── style.css      # 全部样式（含 auth 表单样式）
 └── js/
-    ├── app.js          # UI 绑定、事件处理、弹窗控制、初始化
-    ├── timer.js        # 计时器状态机（createTimer 工厂）
-    ├── audio.js        # 通知音（Web Audio API 合成，无外部文件）
-    └── history.js      # 专注记录（localStorage 持久化）
+    ├── app.js         # UI 绑定 + auth 启动流程
+    ├── timer.js       # 计时器状态机
+    ├── audio.js       # 通知音（Web Audio API）
+    ├── history.js     # 专注记录（async API + localStorage 离线兜底）
+    └── auth.js        # 登录/注册/Token 管理 + 渲染 auth UI
 ```
 
 ## 架构要点
@@ -37,7 +53,21 @@ index.html (type="module" script)
   └── app.js
         ├── timer.js ──→ audio.js
         ├── audio.js
-        └── history.js
+        ├── history.js（async API → Express 后端 → SQLite）
+        └── auth.js  （async API → Express 后端 → SQLite + JWT）
+```
+
+### 后端架构
+
+```
+Express server (port 3000)
+  ├── 静态文件服务（/index.html, /js/*, /css/*）
+  ├── POST /api/auth/register  →  bcrypt 哈希 → SQLite users 表 → 返回 JWT
+  ├── POST /api/auth/login     →  bcrypt 验证 → SQLite users 表 → 返回 JWT
+  ├── GET  /api/auth/me        →  JWT 验证 → 返回用户信息
+  ├── GET  /api/records        →  JWT 验证 → SQLite records 表 → 返回记录列表
+  ├── POST /api/records        →  JWT 验证 → SQLite records 表 → 写入记录
+  └── DELETE /api/records      →  JWT 验证 → SQLite records 表 → 清空记录
 ```
 
 ### 状态机（timer.js）
@@ -61,9 +91,16 @@ index.html (type="module" script)
 - 三种音色：`bell`（双铃铛）、`digital`（电子）、`gentle`（琶音上升）
 
 ### 历史记录（history.js）
-- localStorage 持久化，key: `pomodoro_history`
-- 每次专注阶段完成自动记录（含最后一轮 `all-done`）
+- 默认通过 fetch API 向 `/api/records` 读写，数据持久化到 SQLite
+- **localStorage 离线兜底**：服务器不可用时，记录自动保存到本地，不丢失
+- 每次专注阶段完成自动记录（含最后一轮 `all-done`），fire-and-forget 不阻塞计时器
 - 记录字段：`{ id, date, duration, round, totalRounds }`
+
+### 认证（auth.js）
+- JWT 7 天有效期，存储在 localStorage（key: `pomodoro_token`）
+- 启动时 `verifyToken()` 验证 token 有效性，无效则显示登录页
+- 注册/登录成功后自动存储 token 并进入 app
+- 退出登录清除 token 并回到登录页
 
 ### 样式（style.css）
 - CSS 自定义属性（`:root`）定义深色主题色板，无框架依赖

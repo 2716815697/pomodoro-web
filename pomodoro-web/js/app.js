@@ -5,12 +5,16 @@
 import { createTimer } from './timer.js';
 import { selectSound, getCurrentSound, playAlarm } from './audio.js';
 import { getRecords, addRecord, clearRecords } from './history.js';
+import { verifyToken, renderAuth, renderUserHeader, logout } from './auth.js';
 
-const C = 276.46; // 圆周长 2 * pi * 44
+const C = 276.46;
 
 // ====== DOM 引用 ======
 const $ = (id) => document.getElementById(id);
 const dom = {
+  authContainer: $('authContainer'),
+  appContainer: $('appContainer'),
+  userHeader: $('userHeader'),
   timerDisplay: $('timerDisplay'),
   phaseLabel: $('phaseLabel'),
   statusText: $('statusText'),
@@ -44,20 +48,16 @@ function fmtTime(sec) {
 
 // ====== 渲染 ======
 function render(s) {
-  // 时间
   dom.timerDisplay.textContent = fmtTime(s.secondsLeft);
 
-  // 进度环
   const pct = s.totalSeconds > 0
     ? (s.totalSeconds - s.secondsLeft) / s.totalSeconds
     : 0;
   dom.progressCircle.style.strokeDashoffset = C * (1 - pct);
   dom.progressCircle.classList.toggle('break', s.phase === 'break');
 
-  // 标签
   dom.phaseLabel.textContent = s.phase === 'focus' ? '🎯 专注' : '☕ 休息';
 
-  // 状态文字
   if (s.completed) {
     dom.statusText.textContent = '🎉 全部完成！恭喜 🎉';
   } else if (s.running) {
@@ -70,7 +70,6 @@ function render(s) {
     dom.statusText.textContent = '准备就绪';
   }
 
-  // 按钮
   const isBreak = s.phase === 'break';
   if (s.completed) {
     dom.startBtn.textContent = '🔄 重新开始';
@@ -83,10 +82,8 @@ function render(s) {
     dom.startBtn.className = `btn btn-primary ${isBreak ? 'break' : ''}`;
   }
 
-  // 跳过按钮
   dom.skipBtn.style.display = s.completed ? 'none' : 'inline-flex';
 
-  // 轮次圆点
   renderDots(s);
 }
 
@@ -105,8 +102,8 @@ function renderDots(s) {
 }
 
 // ====== 专注记录渲染 ======
-function renderHistory() {
-  const records = getRecords();
+async function renderHistory() {
+  const records = await getRecords();
   dom.historyToggle.textContent = `📋 专注记录 (${records.length})`;
   dom.historyList.innerHTML = '';
   if (records.length === 0) {
@@ -147,23 +144,43 @@ function hideModal() {
   dom.modalOverlay.classList.remove('show');
 }
 
+// ====== Auth 流程 ======
+function showApp() {
+  dom.authContainer.style.display = 'none';
+  dom.appContainer.style.display = '';
+  renderUserHeader(dom.userHeader, handleLogout);
+  timer.reset();
+  renderHistory();
+}
+
+function showAuth() {
+  dom.appContainer.style.display = 'none';
+  dom.authContainer.style.display = '';
+  renderAuth(dom.authContainer, showApp);
+}
+
+function handleLogout() {
+  logout();
+  showAuth();
+  timer.pause();
+}
+
 // ====== 初始化 ======
 const timer = createTimer({
   focusMin: 25,
   breakMin: 5,
   totalRounds: 4,
   onPhaseEnd: (info) => {
-    // 专注完成时记录历史（含最后一轮 all-done）
     if (info.type === 'focus-end' || info.type === 'all-done') {
-      addRecord({ duration: timer.state.focusMin, round: info.round, totalRounds: info.totalRounds });
-      renderHistory();
+      addRecord({ duration: timer.state.focusMin, round: info.round, totalRounds: info.totalRounds })
+        .then(() => renderHistory())
+        .catch(() => {});
     }
     showModal(info);
   }
 });
 
 timer.subscribe(render);
-timer.reset(); // 触发初始渲染
 
 // ====== 事件绑定 ======
 dom.startBtn.addEventListener('click', () => {
@@ -178,7 +195,6 @@ dom.startBtn.addEventListener('click', () => {
 dom.skipBtn.addEventListener('click', () => timer.skip());
 dom.resetBtn.addEventListener('click', () => timer.reset());
 
-// 弹窗继续按钮
 dom.modalContinueBtn.addEventListener('click', () => {
   hideModal();
   timer.continueToNext();
@@ -187,9 +203,8 @@ dom.modalOverlay.addEventListener('click', (e) => {
   if (e.target === dom.modalOverlay) hideModal();
 });
 
-// 历史记录 — 弹窗展示
-dom.historyToggle.addEventListener('click', () => {
-  renderHistory();
+dom.historyToggle.addEventListener('click', async () => {
+  await renderHistory();
   dom.historyModal.classList.add('show');
 });
 dom.historyClose.addEventListener('click', () => {
@@ -198,14 +213,13 @@ dom.historyClose.addEventListener('click', () => {
 dom.historyModal.addEventListener('click', (e) => {
   if (e.target === dom.historyModal) dom.historyModal.classList.remove('show');
 });
-dom.historyClear.addEventListener('click', () => {
+dom.historyClear.addEventListener('click', async () => {
   if (confirm('确定清空所有专注记录？')) {
-    clearRecords();
-    renderHistory();
+    await clearRecords();
+    await renderHistory();
   }
 });
 
-// 数字步进器按钮
 document.querySelectorAll('.step-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const input = document.getElementById(btn.dataset.input);
@@ -221,10 +235,6 @@ document.querySelectorAll('.step-btn').forEach(btn => {
   });
 });
 
-// 初始渲染历史
-renderHistory();
-
-// 设置变更 - change + Enter + blur
 function applySettings() {
   const focus = parseInt(dom.focusInput.value) || 25;
   const rest = parseInt(dom.breakInput.value) || 5;
@@ -242,17 +252,15 @@ function applySettings() {
   });
 });
 
-// 音效选择
 dom.soundBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     dom.soundBtns.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     selectSound(btn.dataset.sound);
-    playAlarm(); // 试听
+    playAlarm();
   });
 });
 
-// ====== 键盘快捷键 ======
 document.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT') return;
   switch (e.code) {
@@ -268,3 +276,15 @@ document.addEventListener('keydown', (e) => {
       break;
   }
 });
+
+// ====== 启动 ======
+async function boot() {
+  const user = await verifyToken();
+  if (user) {
+    showApp();
+  } else {
+    showAuth();
+  }
+}
+
+boot();

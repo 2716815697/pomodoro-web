@@ -102,6 +102,13 @@ function renderDots(s) {
 }
 
 // ====== 专注记录渲染 ======
+function formatLocalTime(isoStr) {
+  if (!isoStr) return '';
+  // SQLite datetime('now') 输出格式 "2026-05-10 12:34:56"（UTC）
+  const d = new Date(isoStr.includes('T') ? isoStr : isoStr.replace(' ', 'T') + 'Z');
+  return d.toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+}
+
 async function renderHistory() {
   const records = await getRecords();
   dom.historyToggle.textContent = `📋 专注记录 (${records.length})`;
@@ -116,7 +123,7 @@ async function renderHistory() {
     item.innerHTML = `
       <span class="history-item-round">${r.round}</span>
       <span class="history-item-dur">${r.duration} 分钟</span>
-      <span class="history-item-date">${r.date}</span>
+      <span class="history-item-date">${formatLocalTime(r.date)}</span>
     `;
     dom.historyList.appendChild(item);
   });
@@ -263,17 +270,19 @@ dom.soundBtns.forEach(btn => {
 
 document.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT') return;
-  switch (e.code) {
-    case 'Space':
-      e.preventDefault();
-      dom.startBtn.click();
-      break;
-    case 'KeyR':
-      timer.reset();
-      break;
-    case 'KeyS':
-      timer.skip();
-      break;
+  const key = e.key;
+  if (key === ' ') {
+    e.preventDefault();
+    dom.startBtn.click();
+    return;
+  }
+  if (key === 's' || key === 'S') {
+    timer.skip();
+    return;
+  }
+  if (key === 'r' || key === 'R') {
+    timer.reset();
+    return;
   }
 });
 

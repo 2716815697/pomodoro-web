@@ -46,7 +46,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 24px;
   width: 100%;
 }
 
@@ -58,14 +58,15 @@ body {
 
 .side-left .history-toggle {
   writing-mode: vertical-lr;
-  letter-spacing: 3px;
-  padding: 16px 8px;
-  border-radius: 10px;
+  letter-spacing: 6px;
+  padding: 28px 16px;
+  border-radius: 14px;
   border: 1px solid var(--border-color);
-  background: rgba(26, 26, 46, 0.6);
+  background: rgba(26, 26, 46, 0.7);
   backdrop-filter: blur(12px);
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 17px;
+  font-weight: 600;
   cursor: pointer;
   font-family: var(--font);
   transition: all 0.25s;
@@ -88,11 +89,11 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  padding: 8px 10px;
-  border-radius: 8px;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 12px;
   border: 1px solid var(--border-color);
-  background: rgba(26, 26, 46, 0.4);
+  background: rgba(26, 26, 46, 0.5);
   backdrop-filter: blur(8px);
   transition: all 0.2s;
 }
@@ -104,20 +105,20 @@ body {
 
 .shortcut-item kbd {
   font-family: var(--font);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   color: var(--text-primary);
   background: var(--bg-surface);
-  padding: 2px 8px;
-  border-radius: 4px;
+  padding: 4px 14px;
+  border-radius: 6px;
   border: 1px solid var(--border-color);
-  line-height: 1.4;
+  line-height: 1.6;
 }
 
 .shortcut-item span {
-  font-size: 10px;
+  font-size: 13px;
   color: var(--text-muted);
-  letter-spacing: 0.5px;
+  letter-spacing: 2px;
 }
 
 /* ====== Card ====== */
@@ -522,34 +523,6 @@ body {
   flex-wrap: wrap;
 }
 
-/* ====== Keyboard Hints ====== */
-.keyboard-hints {
-  margin-top: 12px;
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.keyboard-hints kbd {
-  display: inline-block;
-  padding: 2px 7px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  font-family: var(--font);
-  font-size: 11px;
-  color: var(--text-secondary);
-  margin: 0 1px;
-}
-
-.keyboard-hints span {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
 /* ====== Responsive ====== */
 @media (max-width: 767px) {
   body { padding: 12px; align-items: flex-start; padding-top: 24px; }
@@ -561,13 +534,14 @@ body {
   .controls { gap: 8px; }
   .btn { padding: 10px 16px; font-size: 14px; min-width: 72px; }
   .settings { padding: 14px 10px; gap: 8px; }
-  .keyboard-hints { flex-wrap: wrap; gap: 8px; }
 }
 
 /* ====== 桌面玻璃卡片 ≥768px ====== */
 @media (min-width: 768px) {
   body {
     padding: 24px;
+    height: 100vh;
+    overflow: hidden;
     background:
       radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(160deg, #0a0a1a 0%, #14142e 40%, #1a1a2e 100%);
@@ -610,11 +584,9 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: var(--radius-lg);
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
-    padding: 20px 40px;
+    padding: 16px 40px;
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 48px);
-    overflow-y: auto;
   }
 
   .card::before {
@@ -645,9 +617,9 @@ body {
     margin-top: auto;
   }
 
-  .card-header { margin-bottom: 8px; }
-  .card-header h1 { font-size: 24px; }
-  .card-header .subtitle { font-size: 14px; margin-top: 2px; }
+  .card-header { margin-bottom: 6px; }
+  .card-header h1 { font-size: 26px; }
+  .card-header .subtitle { font-size: 15px; margin-top: 2px; }
 
   .timer-ring {
     width: 220px;
@@ -660,35 +632,52 @@ body {
     height: 200%;
   }
   .timer-text .time { font-size: 52px; }
-  .timer-text .phase-label { font-size: 15px; }
+  .timer-text .phase-label { font-size: 16px; }
 
-  .round-track { margin-bottom: 10px; gap: 8px; }
-  .round-dot { width: 26px; height: 26px; font-size: 13px; }
+  .round-track { margin-bottom: 8px; gap: 8px; }
+  .round-dot { width: 28px; height: 28px; font-size: 13px; }
 
   .controls { gap: 10px; margin-bottom: 10px; }
-  .btn { padding: 10px 22px; font-size: 15px; min-width: 88px; }
+  .btn { padding: 10px 24px; font-size: 15px; min-width: 92px; }
   .controls .btn-primary { flex: none; }
 
-  .settings { margin: 0 auto 8px; padding: 12px 14px; max-width: 400px; }
-  .settings .num-stepper input { font-size: 15px; padding: 6px 4px; }
-  .settings .step-btn { width: 30px; font-size: 16px; }
-  .settings label { font-size: 11px; }
+  .settings { margin: 0 auto 6px; padding: 10px 14px; max-width: 420px; }
+  .settings .num-stepper input { font-size: 16px; padding: 6px 4px; }
+  .settings .step-btn { width: 32px; font-size: 17px; }
+  .settings label { font-size: 12px; }
 
   .sound-selector { margin-bottom: 0; }
-  .sound-selector button { font-size: 13px; padding: 5px 12px; }
+  .sound-selector button { font-size: 14px; padding: 5px 12px; }
 
   .card-footer-actions {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
-    margin: 6px auto;
+    margin: 4px auto;
   }
 
-  .history-section { margin: 0; }
-  .history-toggle { font-size: 13px; padding: 6px 14px; }
+  .auth-container {
+    padding: 8px 20px 12px;
+  }
 
-  .keyboard-hints { margin-top: 6px; gap: 10px; font-size: 11px; }
+  /* 侧边栏 */
+  .side-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    animation: sideFadeIn 0.5s ease-out;
+  }
+
+  .side-left { order: 0; }
+  .app-wrapper > .card { order: 1; }
+  .side-right { order: 2; }
+
+  @keyframes sideFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
   /* 装饰：浮动圆环 */
   .deco-ring {
@@ -744,54 +733,24 @@ body {
   }
 }
 
-/* ====== 侧边栏布局 ≥1024px ====== */
-@media (min-width: 1024px) {
-  .side-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    animation: sideFadeIn 0.5s ease-out;
-  }
-
-  .side-left {
-    order: 0;
-  }
-
-  .side-right {
-    order: 2;
-  }
-
-  .app-wrapper > .card {
-    order: 1;
-  }
-
-  @keyframes sideFadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-}
+/* ====== 侧边栏布局 ≥1024px（已合并到 ≥768px） ====== */
 
 @media (min-width: 1200px) {
   body { padding: 32px; background-size: 40px 40px, 100%; }
   .card { max-width: min(75vw, 720px); padding: 24px 48px; }
-  .card-header { margin-bottom: 10px; }
-  .card-header h1 { font-size: 26px; }
-  .card-header .subtitle { font-size: 15px; }
-  .timer-ring { width: 240px; height: 240px; margin-bottom: 10px; }
-  .timer-text .time { font-size: 58px; }
-  .timer-text .phase-label { font-size: 16px; }
-  .round-dot { width: 30px; height: 30px; font-size: 14px; }
-  .controls { margin-bottom: 12px; }
-  .btn { padding: 11px 26px; font-size: 16px; min-width: 110px; }
-  .settings { max-width: 420px; padding: 14px 18px; }
-  .settings .num-stepper input { font-size: 16px; padding: 7px 4px; }
-  .settings .step-btn { width: 34px; font-size: 18px; }
+  .card-header h1 { font-size: 30px; }
+  .card-header .subtitle { font-size: 17px; }
+  .timer-ring { width: 250px; height: 250px; margin-bottom: 14px; }
+  .timer-text .time { font-size: 62px; }
+  .timer-text .phase-label { font-size: 18px; }
+  .round-dot { width: 32px; height: 32px; font-size: 15px; }
+  .controls { margin-bottom: 14px; }
+  .btn { padding: 13px 28px; font-size: 17px; min-width: 120px; }
+  .settings { max-width: 440px; padding: 16px 20px; }
+  .settings .num-stepper input { font-size: 17px; padding: 8px 4px; }
+  .settings .step-btn { width: 36px; font-size: 19px; }
   .settings label { font-size: 13px; }
-  .history-section { max-width: 420px; }
-  .sound-selector button { font-size: 14px; }
-  .history-toggle { font-size: 14px; padding: 8px 16px; }
-  .keyboard-hints { margin-top: 8px; font-size: 12px; gap: 12px; }
+  .sound-selector button { font-size: 15px; padding: 7px 16px; }
   .deco-ring--tl { width: 200px; height: 200px; top: 4%; left: 2%; }
   .deco-ring--br { width: 250px; height: 250px; bottom: 4%; right: 2%; }
   .deco-ring--tr { width: 100px; height: 100px; }
@@ -957,7 +916,7 @@ body {
 
 /* ====== Auth ====== */
 .auth-container {
-  padding: 36px 32px 40px;
+  padding: 24px 28px 28px;
   text-align: center;
   animation: authFadeIn 0.5s ease-out;
   position: relative;
@@ -1172,8 +1131,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
+  margin-bottom: 6px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--border-color);
 }
 
